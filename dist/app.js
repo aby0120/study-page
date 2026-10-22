@@ -2,6 +2,8 @@
   "use strict";
 
   const data = window.QUIZ_DATA;
+  const material = window.QUIZ_RESULT_MATERIAL || { note: "", profiles: [] };
+  const materialById = Object.fromEntries(material.profiles.map((profile) => [profile.id, profile]));
   const intro = document.getElementById("intro");
   const quiz = document.getElementById("quiz");
   const resultSection = document.getElementById("result");
@@ -79,7 +81,11 @@
 
   function tallyAnswers() {
     const scores = {};
-    data.results.forEach((profile) => { scores[profile.id] = 0; });
+    const evidenceByProfile = {};
+    data.results.forEach((profile) => {
+      scores[profile.id] = 0;
+      evidenceByProfile[profile.id] = [];
+    });
     const mostRecentMatches = [];
     answers.forEach((choiceIndex, index) => {
       const choice = data.questions[index].choices[choiceIndex];
@@ -88,11 +94,15 @@
         if (!id || !Object.prototype.hasOwnProperty.call(scores, id)) return;
         scores[id] += 1;
         mostRecentMatches.push(id);
+        evidenceByProfile[id].push({
+          question: data.questions[index].title,
+          choiceTitle: choice.title,
+          text: choice.text
+        });
       });
     });
-    return { scores, mostRecentMatches };
+    return { scores, mostRecentMatches, evidenceByProfile };
   }
-
   function chooseProfile(scores, mostRecentMatches) {
     const regularProfiles = data.results.filter((profile) => !["flexible", "gap_year"].includes(profile.id));
     const maxScore = Math.max(...regularProfiles.map((profile) => scores[profile.id]));
@@ -132,28 +142,106 @@
     });
   }
 
+  function selectedAnswerEvidence(questionIndex, choiceIndex) {
+    const question = data.questions[questionIndex];
+    const choice = question.choices[choiceIndex];
+    return { question: question.title, choiceTitle: choice.title, text: choice.text };
+  }
+
+  function getResultEvidence(profileId, evidenceByProfile, alternatives) {
+    if (profileId === "gap_year") {
+      const pauseSignals = [[0, 3], [4, 3], [5, 2], [7, 2]];
+      return pauseSignals
+        .filter(([questionIndex, choiceIndex]) => answers[questionIndex] === choiceIndex)
+        .map(([questionIndex, choiceIndex]) => selectedAnswerEvidence(questionIndex, choiceIndex));
+    }
+    if (profileId === "flexible") {
+      const alternativeIds = new Set(alternatives.map((profile) => profile.id));
+      const seenQuestions = new Set();
+      return Array.from(alternativeIds)
+        .flatMap((id) => evidenceByProfile[id] || [])
+        .filter((item) => {
+          if (seenQuestions.has(item.question)) return false;
+          seenQuestions.add(item.question);
+          return true;
+        })
+        .slice(0, 4);
+    }
+    return evidenceByProfile[profileId] || [];
+  }
+
+  function addEvidenceItems(host, items) {
+    host.replaceChildren();
+    items.forEach((item) => {
+      const li = document.createElement("li");
+      const question = document.createElement("span");
+      question.className = "evidence-question";
+      question.textContent = item.question;
+      const choice = document.createElement("strong");
+      choice.textContent = item.choiceTitle;
+      const text = document.createElement("p");
+      text.textContent = item.text;
+      li.append(question, choice, text);
+      host.append(li);
+    });
+  }
+
+  function setText(id, value) {
+    document.getElementById(id).textContent = value || "";
+  }
+
   function showResult() {
-    const { scores, mostRecentMatches } = tallyAnswers();
+    const { scores, mostRecentMatches, evidenceByProfile } = tallyAnswers();
     const winner = chooseProfile(scores, mostRecentMatches);
     const alternatives = data.results
       .filter((profile) => !["flexible", "gap_year"].includes(profile.id) && profile.id !== winner.id && scores[profile.id] > 0)
       .sort((a, b) => scores[b.id] - scores[a.id])
       .slice(0, 3);
+    const source = materialById[winner.id] || {};
+    const evidence = getResultEvidence(winner.id, evidenceByProfile, alternatives);
 
-    document.getElementById("result-label").textContent = winner.label;
-    document.getElementById("result-title").textContent = winner.title;
-    document.getElementById("result-quote").textContent = winner.quote;
-    document.getElementById("result-summary").textContent = winner.summary;
+    setText("result-label", winner.label);
+    setText("result-title", winner.title);
+    setText("result-source-title", source.sourceTitle ? "原素材趣味画像：" + source.sourceTitle : "");
+    setText("result-quote", source.quote || winner.quote);
+    setText("result-summary", winner.summary);
+    setText("result-why-fit", source.whyFit || winner.summary);
+    setText("result-need", source.need || winner.summary);
+    if (winner.id === "gap_year") {
+      setText("result-match-count", "有 " + evidence.length + " 个回答信号，提示你可以先理清节奏，再决定目的地。");
+    } else if (winner.id === "flexible") {
+      setText("result-match-count", "你的线索分布在多个方向，没有单一目的地明显领先。");
+    } else {
+      setText("result-match-count", "本次有 " + scores[winner.id] + " 道选择与这个画像的线索相呼应。");
+    }
+    addEvidenceItems(document.getElementById("result-evidence-list"), evidence);
+    document.getElementById("result-evidence-block").hidden = evidence.length === 0;
     addListItems(document.getElementById("result-strengths"), winner.strengths);
     addListItems(document.getElementById("result-checks"), winner.checks);
+
+    setText("source-category", source.category);
+    setText("source-category-share", source.categoryShare);
+    setText("source-share", source.share);
+    setText("source-title", source.sourceTitle);
+    setText("source-quote", source.quote);
+    setText("source-judgment", source.judgment);
+    setText("source-need", source.need);
+    setText("source-note", material.note);
 
     const pills = document.getElementById("destination-pills");
     pills.replaceChildren();
     alternatives.forEach((profile) => {
-      const pill = document.createElement("span");
-      pill.className = "destination-pill";
-      pill.textContent = profile.places.join(" / ");
-      pills.append(pill);
+      const card = document.createElement("article");
+      card.className = "destination-pill";
+      const title = document.createElement("strong");
+      title.textContent = profile.title;
+      const match = document.createElement("span");
+      match.className = "destination-match";
+      match.textContent = "匹配 " + scores[profile.id] + " 道回答线索";
+      const summary = document.createElement("p");
+      summary.textContent = profile.summary;
+      card.append(title, match, summary);
+      pills.append(card);
     });
     const alternativesBlock = document.getElementById("alternatives-block");
     alternativesBlock.hidden = alternatives.length === 0;
@@ -162,11 +250,10 @@
     const altNote = alternativesBlock.querySelector(".alternatives-note");
     altNote.textContent = winner.id === "gap_year"
       ? "先理清节奏之后，可以从这些目的地继续了解"
-      : "来自你答案里的其他目的地线索";
+      : "其他回答里也出现的目的地线索";
 
     showSection("result");
   }
-
   startButton.addEventListener("click", () => {
     questionIndex = 0;
     renderQuestion();
@@ -207,11 +294,23 @@
     const title = document.getElementById("result-title").textContent;
     const quote = document.getElementById("result-quote").textContent;
     const summary = document.getElementById("result-summary").textContent;
-    const message = title + "\n" + quote + "\n" + summary;
+    const whyFit = document.getElementById("result-why-fit").textContent;
+    const need = document.getElementById("result-need").textContent;
+    const evidence = Array.from(document.querySelectorAll("#result-evidence-list li"))
+      .map((li) => Array.from(li.children).map((child) => child.textContent).join("："))
+      .join("\n");
+    const message = [
+      title,
+      quote,
+      summary,
+      "为什么可能适合：" + whyFit,
+      evidence ? "你的作答线索：\n" + evidence : "",
+      "这类环境回应的需要：" + need
+    ].filter(Boolean).join("\n\n");
     const status = document.getElementById("copy-status");
     try {
       await navigator.clipboard.writeText(message);
-      status.textContent = "结果摘要已复制";
+      status.textContent = "完整结果摘要已复制";
     } catch {
       status.textContent = "暂时无法复制，可以手动选中结果文字";
     }

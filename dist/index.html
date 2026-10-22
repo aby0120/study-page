@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
   <script defer src="./quiz-data.js"></script>
+  <script defer src="./result-material.js"></script>
   <script defer src="./app.js"></script>
 </head>
 <body>
@@ -93,15 +94,29 @@
           <div>
             <p class="eyebrow"><span class="eyebrow-line"></span><span id="result-label">目的地画像</span></p>
             <h2 id="result-title"></h2>
+            <p class="result-source-title" id="result-source-title"></p>
           </div>
           <div class="result-compass" aria-hidden="true"><span>✳</span><small>N<br>·<br>S</small></div>
         </div>
         <blockquote id="result-quote"></blockquote>
         <p class="result-summary" id="result-summary"></p>
+        <section class="result-reason" aria-labelledby="result-why-heading">
+          <h3 id="result-why-heading"><span aria-hidden="true">✦</span> 为什么这个方向可能适合你</h3>
+          <p id="result-why-fit"></p>
+          <p class="result-match-count" id="result-match-count"></p>
+        </section>
+        <section class="result-evidence" id="result-evidence-block" aria-labelledby="result-evidence-heading">
+          <h3 id="result-evidence-heading">你的作答线索</h3>
+          <ol id="result-evidence-list"></ol>
+        </section>
         <div class="result-columns">
           <section class="result-column">
             <h3><span aria-hidden="true">✦</span> 你带着什么出发</h3>
             <ul id="result-strengths"></ul>
+          </section>
+          <section class="result-column result-needs">
+            <h3><span aria-hidden="true">⌖</span> 这类环境回应的需要</h3>
+            <p id="result-need"></p>
           </section>
           <section class="result-column result-checks">
             <h3><span aria-hidden="true">⌖</span> 下一步可以核实</h3>
@@ -111,10 +126,23 @@
         <div class="alternatives" id="alternatives-block">
           <div class="alternatives-heading">
             <span class="eyebrow">同频备选</span>
-            <span class="alternatives-note">来自你答案里的其他目的地线索</span>
+            <span class="alternatives-note">其他回答里也出现的目的地线索</span>
           </div>
           <div class="destination-pills" id="destination-pills"></div>
         </div>
+        <details class="source-original" id="source-original-details">
+          <summary>展开查看你提供的原始趣味画像</summary>
+          <div class="source-original-content">
+            <p><span>流派</span><b id="source-category"></b></p>
+            <p><span>流派占比</span><b id="source-category-share"></b></p>
+            <p><span>画像占比</span><b id="source-share"></b></p>
+            <p><span>画像名称</span><b id="source-title"></b></p>
+            <p class="source-quote-row"><span>高光金句</span><b id="source-quote"></b></p>
+            <p class="source-judgment-row"><span>原始判词</span><span id="source-judgment"></span></p>
+            <p class="source-need-row"><span>隐藏刚需</span><span id="source-need"></span></p>
+            <p class="source-note" id="source-note"></p>
+          </div>
+        </details>
         <div class="result-note">
           <span aria-hidden="true">i</span>
           <p>这是基于答题偏好的灵感测试，不代表录取、费用、签证、就业或移民结论。真正做决定前，请按专业、预算、授课语言、院校项目和当年政策逐项核实。</p>

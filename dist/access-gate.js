@@ -124,7 +124,7 @@
       unlock(date);
       return;
     }
-    error.textContent = "密码不正确，请按北京时间日期倒序输入。";
+    error.textContent = "密码不正确，请重试。";
     error.hidden = false;
     input.value = "";
     input.focus();

@@ -20,12 +20,10 @@
     <div class="access-card">
       <p class="eyebrow"><span class="eyebrow-line"></span> DAILY ENTRY</p>
       <h1 id="access-title">先输入今日密码</h1>
-      <p class="access-description">密码是北京时间日期按 YYYYMMDD 写出后倒序的 8 位数字。</p>
       <form id="access-form">
-        <label for="access-password">今日进入密码</label>
-        <input id="access-password" name="password" type="password" inputmode="numeric" autocomplete="off" maxlength="8" pattern="[0-9]{8}" required autofocus aria-describedby="access-error">
+        <input id="access-password" name="password" type="password" inputmode="numeric" autocomplete="off" maxlength="8" pattern="[0-9]{8}" placeholder="请输入密码" aria-label="密码" required autofocus aria-describedby="access-error">
         <button class="button button-primary access-submit" type="submit">进入网站 <span aria-hidden="true">→</span></button>
-        <p class="access-error" id="access-error" role="alert" hidden>密码不正确，请按北京时间日期倒序输入。</p>
+        <p class="access-error" id="access-error" role="alert" hidden>密码不正确，请重试。</p>
       </form>
     </div>
   </section>

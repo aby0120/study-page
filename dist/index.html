@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f0e5">
+  <meta name="description" content="用 8 道生活情境题，探索更适合自己的留学目的地与申请节奏。">
+  <title>留学这趟路，怎样走得像你？</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+  <script defer src="./quiz-data.js"></script>
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳转到主要内容</a>
+  <header class="site-header">
+    <a class="brand" href="#" aria-label="留学目的地探索，返回首页">
+      <span class="brand-mark" aria-hidden="true">✳</span>
+      <span><b>旅途自有答案</b><small>DESTINATION JOURNAL</small></span>
+    </a>
+    <div class="header-note"><span class="status-dot"></span> 一份关于你自己的小小探索</div>
+  </header>
+
+  <main id="main">
+    <section class="hero page-shell" id="intro" aria-labelledby="hero-title">
+      <img class="hero-art" src="./assets/journey-journal.png" alt="摊开的世界地图、护照和指南针，像一本旅行手账">
+      <div class="hero-shade"></div>
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow-line"></span> 留学目的地 · 灵感测试</p>
+        <h1 id="hero-title">去哪里留学，<br><em>更像你自己？</em></h1>
+        <p class="hero-desc">不从排名开始，从你真实的选择开始。8 个生活情境，带你找到更合拍的目的地线索。</p>
+        <div class="hero-facts" aria-label="测试信息">
+          <span>◷ 约 3 分钟</span><span>✦ 8 道情境题</span><span>⌖ 20 种目的地画像</span>
+        </div>
+        <button class="button button-primary" id="start-button" type="button">
+          开始这趟探索 <span aria-hidden="true">→</span>
+        </button>
+        <p class="hero-caption">跟着直觉选就好，没有标准答案。</p>
+      </div>
+      <div class="hero-stamp" aria-hidden="true"><span>GO<br>YOUR<br>WAY</span><b>✳</b></div>
+      <div class="hero-index" aria-hidden="true">FIELD NOTES&nbsp; / &nbsp;01—08</div>
+    </section>
+
+    <section class="quiz-section page-shell" id="quiz" hidden aria-labelledby="question-title">
+      <div class="quiz-topline">
+        <button class="text-button" id="exit-button" type="button"><span aria-hidden="true">←</span> 回到开场</button>
+        <span class="micro-label">你的目的地手账</span>
+      </div>
+      <div class="quiz-layout">
+        <div class="quiz-main">
+          <div class="progress-row">
+            <span class="question-counter" id="question-counter">第 1 / 8 题</span>
+            <span class="progress-caption">按直觉选择</span>
+          </div>
+          <div class="progress-track" role="progressbar" aria-label="答题进度" aria-valuemin="0" aria-valuemax="8" aria-valuenow="0" id="progress-track">
+            <span class="progress-fill" id="progress-fill"></span>
+          </div>
+          <article class="question-card" aria-live="polite">
+            <div class="question-index" id="question-index">01</div>
+            <p class="question-kicker">一个真实生活切片</p>
+            <h2 id="question-title" tabindex="-1"></h2>
+            <p class="question-scene" id="question-scene"></p>
+            <p class="question-prompt" id="question-prompt"></p>
+          </article>
+          <div class="choices" id="choices" role="group" aria-label="选择一个最符合你的回答"></div>
+          <div class="quiz-controls">
+            <button class="button button-back" id="back-button" type="button">← 上一题</button>
+            <button class="button button-next" id="next-button" type="button" disabled>选好了，继续 <span aria-hidden="true">→</span></button>
+          </div>
+        </div>
+        <aside class="quiz-aside">
+          <div class="aside-card">
+            <span class="aside-icon" aria-hidden="true">✳</span>
+            <p class="aside-heading">听听自己的第一反应</p>
+            <p>选项没有对错，也不需要选“看起来最优秀”的那一个。你可以随时返回修改。</p>
+            <div class="aside-rule"></div>
+            <p class="aside-small">你的选择只在当前页面计算，不会上传或保存。</p>
+          </div>
+          <div class="aside-scribble" aria-hidden="true">keep<br>your own<br>compass</div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="result-section page-shell" id="result" hidden aria-labelledby="result-title">
+      <div class="result-toolbar">
+        <button class="text-button" id="edit-answers-button" type="button"><span aria-hidden="true">←</span> 返回修改答案</button>
+        <span class="micro-label">你的探索结果</span>
+      </div>
+      <article class="result-card">
+        <div class="result-top">
+          <div>
+            <p class="eyebrow"><span class="eyebrow-line"></span><span id="result-label">目的地画像</span></p>
+            <h2 id="result-title"></h2>
+          </div>
+          <div class="result-compass" aria-hidden="true"><span>✳</span><small>N<br>·<br>S</small></div>
+        </div>
+        <blockquote id="result-quote"></blockquote>
+        <p class="result-summary" id="result-summary"></p>
+        <div class="result-columns">
+          <section class="result-column">
+            <h3><span aria-hidden="true">✦</span> 你带着什么出发</h3>
+            <ul id="result-strengths"></ul>
+          </section>
+          <section class="result-column result-checks">
+            <h3><span aria-hidden="true">⌖</span> 下一步可以核实</h3>
+            <ul id="result-checks"></ul>
+          </section>
+        </div>
+        <div class="alternatives" id="alternatives-block">
+          <div class="alternatives-heading">
+            <span class="eyebrow">同频备选</span>
+            <span class="alternatives-note">来自你答案里的其他目的地线索</span>
+          </div>
+          <div class="destination-pills" id="destination-pills"></div>
+        </div>
+        <div class="result-note">
+          <span aria-hidden="true">i</span>
+          <p>这是基于答题偏好的灵感测试，不代表录取、费用、签证、就业或移民结论。真正做决定前，请按专业、预算、授课语言、院校项目和当年政策逐项核实。</p>
+        </div>
+      </article>
+      <div class="result-actions">
+        <button class="button button-primary" id="restart-button" type="button">再探索一次 <span aria-hidden="true">↻</span></button>
+        <button class="button button-quiet" id="copy-button" type="button">复制结果摘要 <span aria-hidden="true">↗</span></button>
+        <span class="copy-status" id="copy-status" role="status" aria-live="polite"></span>
+      </div>
+    </section>
+
+    <section class="method page-shell" id="method">
+      <div class="method-heading"><span class="eyebrow">HOW IT WORKS</span><span class="method-line"></span></div>
+      <p>这里不是择校排名，也不替你做决定。它把每个选项中的目的地线索累积起来，再给你一个值得继续了解的起点。</p>
+    </section>
+  </main>
+
+  <footer class="site-footer page-shell">
+    <span>旅途自有答案 <i>✳</i> DESTINATION JOURNAL</span>
+    <span>把答案带在身上，把目的地留给自己。</span>
+  </footer>
+</body>
+</html>

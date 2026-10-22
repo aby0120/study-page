@@ -23,10 +23,23 @@ body {
   font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
 }
+body:not(.access-open) { overflow: hidden; }
 button, a { font: inherit; }
 button { color: inherit; }
 button:focus-visible, a:focus-visible { outline: 3px solid #ae6558; outline-offset: 4px; }
 [hidden] { display: none !important; }
+.access-gate { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; overflow-y: auto; padding: 24px; background: radial-gradient(ellipse at 4% 18%, rgba(214,201,173,.22), transparent 29rem), radial-gradient(ellipse at 93% 59%, rgba(203,190,158,.16), transparent 26rem), var(--paper); }
+body.access-open .access-gate { display: none; }
+.access-card { position: relative; width: min(100%, 470px); padding: 43px 44px 39px; border: 1px solid var(--line); background: rgba(251,248,240,.94); box-shadow: 0 16px 45px rgba(64,55,39,.1); }
+.access-card::before { position: absolute; inset: 8px; border: 1px solid rgba(171,156,126,.28); content: ""; pointer-events: none; }
+.access-card h1 { margin: 21px 0 10px; font: 600 clamp(27px,5vw,35px)/1.45 var(--serif); letter-spacing: .02em; }
+.access-description { margin-bottom: 25px; color: #727065; font-size: 12px; line-height: 1.85; }
+#access-form { display: grid; gap: 11px; }
+#access-form label { color: #626359; font-size: 11px; font-weight: 600; }
+#access-password { width: 100%; min-height: 48px; padding: 0 14px; border: 1px solid #d8cfbc; border-radius: 2px; background: #fffdf7; color: var(--ink); font: 600 18px var(--sans); letter-spacing: .18em; }
+#access-password:focus { outline: 2px solid rgba(145,69,62,.3); border-color: var(--wine); }
+.access-submit { width: 100%; margin-top: 7px; }
+.access-error { margin: 0; color: var(--wine); font-size: 11px; line-height: 1.7; }
 .skip-link { position: fixed; top: 8px; left: 8px; z-index: 20; padding: 10px 14px; background: white; transform: translateY(-150%); }
 .skip-link:focus { transform: translateY(0); }
 .page-shell, .site-header { width: min(1160px, calc(100% - 56px)); margin-inline: auto; }
@@ -189,6 +202,7 @@ h1, h2, h3, p { margin-top: 0; }
 }
 @media (max-width: 680px) {
   .page-shell, .site-header { width: min(100% - 32px, 540px); }
+  .access-card { padding: 34px 25px 29px; }
   .site-header { height: 70px; }
   .header-note { font-size: 0; }
   .header-note .status-dot { width: 8px; height: 8px; }
